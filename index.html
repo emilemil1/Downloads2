@@ -4,6 +4,7 @@
     <script>
         window.global = {}
         window.global.firstPage = fetch("content/firstPage.json").then(response => response.json())
+        window.global.onload = new Promise(res => window.addEventListener("load", res))
     </script>
     <meta http-equiv="cache-control" content="public">
     <meta charset="UTF-8">
@@ -217,7 +218,7 @@
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&amp;text=%20ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%C3%89%C3%A9%C3%9C%C3%BC%26%3F!.%27-_%7C%23()%5B%5D">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="preload" href="index.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="index.css" as="style" onload="window.global.onload.then(() => this.rel='stylesheet')">
     <script async defer src="index-async.js"></script>
     <script defer src="index-sync.js"></script>
     </head>
