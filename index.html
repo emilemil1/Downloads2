@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        window.global = {}
+        window.global.firstPage = fetch("content/firstPage.json").then(response => response.json())
+    </script>
+    <meta http-equiv="cache-control" content="public">
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="theme-color" content="#202020" />
+    <title>emilemil1 | Downloads</title>
+    <style>
+        :root {
+            --backdrop: rgb(12,12,12);
+            --backdrop-highlight: rgb(24,24,24);
+            --panel: rgb(36,36,36);
+            --icon: rgb(160,160,160);
+
+            --text-subtle: rgba(220,220,220,0.3);
+            --text-normal: rgb(220,220,220,0.8);
+
+            --font: 'Roboto', 'sans-serif';
+
+            --panel-border-radius: 0.25rem;
+
+            --header-height: 3.5rem;
+            --footer-height: 3rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: var(--backdrop);
+            font-family: var(--font);
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        body {
+            position: absolute;
+            height: fit-content;
+            width: 100%;
+            margin: 0;
+        }
+
+        #header {
+            position: absolute;
+            top: 0;
+            background-color: var(--panel);
+            height: var(--header-height);
+            width: 100%;
+            display: grid;
+            grid-template-rows: 1fr;
+            grid-template-columns: var(--header-height) 1fr var(--header-height);
+            align-items: center;
+        }
+
+        #footer {
+            position: fixed;
+            bottom: 0;
+            background-color: var(--panel);
+            height: var(--footer-height);
+            width: 100%;
+        }
+
+        #content {
+            margin-top: var(--header-height);
+            height: calc(100% - var(--header-height));
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            margin-bottom: var(--footer-height);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #search-wrapper {
+            --search-height: 2.25rem;
+            
+            grid-row: 1;
+            grid-column: 2;
+            justify-self: center;
+            height: var(--search-height);
+            display: grid;
+            grid-template-columns: var(--search-height) 1fr;
+            grid-template-rows: var(--search-height);
+            width: 100%;
+            max-width: 16rem;
+        }
+
+        #search-wrapper > * {
+            background-color: var(--backdrop);
+        }
+
+        #search-box {
+            display: flex;
+            flex-shrink: 1;
+            grid-column: 1/-1;
+            grid-row: 1;
+            border: none;
+            outline: none;
+            padding: 0 0.5rem;
+            font-size: 0.875em;
+            font-family: inherit;
+            color: var(--text-normal);
+            border-radius: var(--panel-border-radius);
+        }
+
+        #search-icon {
+            z-index: 1;
+            grid-row: 1;
+            grid-column: 1;
+            display: flex;
+            font-size: 1.75em;
+            color: var(--panel);
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            pointer-events: none;
+        }
+
+        #search-toggle, #search-return, #search-clear {
+            display: none;
+        }
+
+        video-entry {
+            display: flex;
+            color: white;
+            padding: 1.5rem 0;
+            width: 100%;
+        }
+
+        video-entry:not(:last-child) {
+            border-bottom: 1px solid var(--panel);
+        }
+
+        .video-text-preview {
+            margin-left: 1rem;
+        }
+
+        .video-text-preview-title {
+            font-size: 1.125rem;
+        }
+
+        .video-text-preview-date {
+            color: var(--icon);
+            font-size: 0.8rem;
+            margin-top: 0.125rem;
+        }
+
+        .video-image-preview:not([src]) {
+            display: none;
+        }
+
+        /* MOBILE */
+
+        @media only screen and (max-width: 480px) {
+            :root {
+                --header-height: 3rem;
+                --backdrop: rgb(18,18,18);
+                --backdrop-highlight: rgb(36,36,36);
+            }
+
+            #header {
+                box-sizing: content-box;
+                background-color: var(--backdrop);
+                border-bottom: 1px solid var(--panel);
+                padding: 0 0.25rem;
+                grid-gap: 0.25rem;
+                width: calc(100% - 0.5rem);
+            }
+
+            #content {
+                width: 100%;
+            }
+
+            #footer {
+                background-color: var(--backdrop);
+                border-top: 1px solid var(--panel); 
+            }
+            
+            #search-wrapper:not([display]) {
+                display: none;
+            }
+
+            #search-toggle, #search-return, #search-clear {
+                grid-row: 1;
+                grid-column: 3;
+                display: flex;
+                font-size: 1.75em;
+                color: var(--icon);
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                justify-self: end;
+                min-width: var(--header-height);
+            }
+
+            #search-toggle:not([display]), #search-return:not([display]) {
+                display: none;
+            }
+
+            video-entry {
+                flex-direction: column;
+                padding-top: 0;
+            }
+
+            .video-image-preview {
+                width: 100vw;
+                height: auto;
+            }
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&amp;text=%20ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%C3%89%C3%A9%C3%9C%C3%BC%26%3F!.%27-_%7C%23()%5B%5D">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preload" href="index.css" as="style" onload="this.rel='stylesheet'">
+    <script async defer src="index-async.js"></script>
+    <script defer src="index-sync.js"></script>
+    </head>
+<body>
+    <div id="header">
+        <i class="material-icons toggle" id="search-return" toggle="click click() #search-toggle">arrow_back</i>
+        <div id="search-wrapper">
+            <input id="search-box" required="" spellcheck="false" title="" type="search">
+            <i class="material-icons" id="search-icon">search</i>
+            <i class="material-icons toggle" id="search-clear" toggle="click prop.value='',focus() #search-box">clear</i>
+        </div>
+        <i class="material-icons toggle" id="search-toggle" toggle="click attr.display #search-wrapper,#search-return,#search-toggle | click focus() #search-box" display>search</i>
+    </div>
+    <div id="content">
+        <template id="video-entry-template">
+            <video-entry>
+                <img class="video-image-preview" width="320" height="180">
+                <div class="video-text-preview">
+                    <div class="video-text-preview-title"></div>
+                    <div class="video-text-preview-date"></div>
+                </div>
+            </video-entry>
+        </template>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>
