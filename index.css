@@ -11,6 +11,52 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     justify-self: start;
 }
 
+.video-entry-content {
+    cursor: pointer;
+}
+
+.video-tags {
+    margin-top: auto;
+}
+
+.video-tag {
+    display: flex;
+    overflow: hidden;
+}
+
+.video-tag-type {
+    background-color: var(--panel-bright);
+    color: var(--text-light);
+    padding: 0.2rem 0.4rem;
+    font-size: 1.5rem;
+    border-radius: var(--panel-border-radius) 0 0 var(--panel-border-radius);
+}
+
+.video-tag-text, .video-tag-additional {
+    padding: 0.3rem 0.5rem;
+    color: var(--text-normal);
+    background-color: var(--panel);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    white-space: pre;
+    border-radius: 0 var(--panel-border-radius) var(--panel-border-radius) 0;
+    
+}
+
+.video-tag-additional {
+    border-radius: var(--panel-border-radius);
+    margin-left: 0.25rem;
+}
+
+.video-tag-additional.hidden {
+    display: none;
+}
+
+.video-tag-text:hover {
+    background-color: var(--backdrop-highlight);
+}
+
 /* MOBILE */
 
 @media only screen and (max-width: 480px) {

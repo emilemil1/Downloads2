@@ -2,47 +2,76 @@
 class VideoEntryElement extends HTMLElement {
     constructor() {
         super()
+        this.infoLoaded = false
+        this.titleLoaded = false
+        this.dateLoaded = false
+        this.imageLoaded = false
     }
 
-    setInfo(info) {
-        this.info = info
-        this.querySelector(".video-image-preview").src = `https://i.ytimg.com/vi/${this.info.id}/mqdefault.jpg`
-        this.querySelector(".video-text-preview-title").textContent = this.info.title
-        this.querySelector(".video-text-preview-date").textContent = this.info.date
+    setInfo(info, delayImages) {
+        if (!this.infoLoaded) {
+            this.info = info
+            this.id = info.id
+            this.infoLoaded = true
+        }
+        if (!this.titleLoaded) {
+            this.querySelector(".video-text-preview-title").textContent = this.info.title
+            this.titleLoaded = true
+        }
+        if (!this.dateLoaded) {
+            this.querySelector(".video-text-preview-date").textContent = this.info.date
+            this.dateLoaded = true
+        }
+        if (!this.imageLoaded) {
+            const setImg = () => {
+                this.querySelector(".video-image-preview").src = `https://i.ytimg.com/vi/${this.info.id}/mqdefault.jpg`
+                this.imageLoaded = true
+            }
+            if (delayImages) {
+                setTimeout(() => {
+                    if (document.getElementById(this.info.id) !== null) {
+                        setImg()
+                    }
+                }, 250)
+            } else {
+                setImg()
+            }
+        }
     }
-    
 }
 customElements.define('video-entry', VideoEntryElement)
 
 // ACTIONS //
 function loadFirstPage(firstPage) {
-    for (let i = 0; i < 20; i++) {
-        const entry = storage.availableEntries[i]
-        entry.setInfo(firstPage[i])
-        storage.usedEntries.push(entry)
+    const type = performance.getEntriesByType("navigation")[0].type
+    if (type === "reload" || type === "back_forward") {
+        return
     }
-    storage.availableEntries = []
+    const content = document.getElementById("content")
+    for (let i = 0; i < 20; i++) {
+        const entry = firstPage[i]
+        entry.element = content.children[i]
+        entry.element.setInfo(entry)
+    }
 }
 
 function prepareFirstPage(resolve) {
     const template = document.getElementById("video-entry-template")
     const frag = document.createDocumentFragment()
-    storage.availableEntries = []
-    storage.usedEntries = []
     for (let i = 0; i < 20; i++) {
         const content = template.content.cloneNode(true)
         frag.appendChild(content)
-        storage.availableEntries.push(frag.lastElementChild)
     }
-    template.remove()
     document.getElementById("content").appendChild(frag)
     resolve()
 }
 
 // TRIGGERS //
-const storage = {}
 const fpLoad = new Promise(res => prepareFirstPage(res))
 window.global.firstPage.then(async (firstPage) => {
     await fpLoad
     loadFirstPage(firstPage)
-})
+    fetch("content/searchIndex.json")
+        .then(response => response.json())
+        .then(index => window.global.searchIndex.resolve(index))
+}).then(window.global.sync.loaded.resolve())

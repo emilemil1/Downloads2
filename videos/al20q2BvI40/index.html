@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            const url = window.location.href
+            const id = url.substring(url.indexOf("/videos/") + 8, url.length-1)
+            window.location.assign(window.location.origin + "/video?=" + id)
+        </script>
+        <meta http-equiv="cache-control" content="public">
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <meta name="theme-color" content="#202020" />
+        <title>Redirecting...</title>
+    </head>
+</html>
