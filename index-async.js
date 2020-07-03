@@ -40,27 +40,30 @@ class Trigger {
                 }
             }
         }
-        return () => {
-            listeners.forEach(listener => listener())
+        return (e) => {
+            listeners.forEach(listener => listener(e))
         }
     }
 
-    resolveTargetElement(element, target) {
-        const targetElement = target === "this" ? element : document.querySelector(target)
+    resolveTargetElement(element, target, event) {
+        let targetElement
+        if (target === "this") targetElement = element
+        else if (target === "e") targetElement = event
+        else targetElement = document.querySelector(target)
         if (targetElement === undefined) {
             throw {message: "Could not locate trigger target element in DOM: " + target, element}
         }
         return targetElement
     }
 
-    createMethodEventListener(element, target, method) {
+    createMethodEventListener(element, target, method, event) {
         const index = method.indexOf("(")
         const methodName = method.substring(0, index)
         let args = method.substring(index).match(/[^,\(\)]+/g) || []
         
         args = args.map(arg => arg.trim())
-        return () => {
-            const targetElement = this.resolveTargetElement(element, target)
+        return (e) => {
+            const targetElement = this.resolveTargetElement(element, target, e)
             const resolvedArgs = args.map(arg => {
                 if (arg === "this") {
                     return element
@@ -137,11 +140,48 @@ class Trigger {
 class Footer {
     constructor(element) {
         this.footer = element
-        this.footer.load = this.load
+        this.content = element.querySelector("#footer-content")
+        this.video = element.querySelector("#footer-video")
+        this.footer.load = videoEntry => this.load(videoEntry)
+        this.load.listener = e => e.preventDefault()
     }
 
     load(videoEntry) {
-        console.log(videoEntry.parentNode.info)
+        this.footer.addEventListener("transitionend", () => {
+            this.footer.toggleAttribute("transition")
+            if (this.footer.hasAttribute("display")) {
+                this.loadExpensiveContent(videoEntry)
+            }
+        }, {
+            once: true
+        })
+        this.footer.toggleAttribute("transition")
+        this.footer.toggleAttribute("display")
+        if (this.footer.hasAttribute("display")) {
+            this.footer.addEventListener("wheel", this.load.listener)
+            this.footer.addEventListener("touchmove", this.load.listener)
+            this.loadCheapContent(videoEntry)
+        } else {
+            this.footer.removeEventListener("wheel", this.load.listener)
+            this.footer.removeEventListener("touchmove", this.load.listener)
+            this.unloadExpensiveContent()
+        }
+    }
+
+    loadCheapContent(videoEntry) {
+
+    }
+
+    loadExpensiveContent(videoEntry) {
+        this.content.firstElementChild.toggleAttribute("display", true)
+        if (videoEntry !== undefined) {
+            const src = "https://www.youtube-nocookie.com/embed/" + videoEntry.id.substring(1)
+            if (this.video.src !== src) this.video.src = src
+        }
+    }
+
+    unloadExpensiveContent() {
+        this.content.firstElementChild.removeAttribute("display")
     }
 }
 
@@ -154,7 +194,9 @@ class Content {
         this.tagTemplate.remove()
         this.entries = []
         this.scrollPosition = document.documentElement.scrollTop
-        document.onscroll = () => this.scroll()
+        document.addEventListener("scroll", () => this.scroll(), {
+            passive: true
+        })
 
         window.addEventListener("beforeunload", this.save)
     }
@@ -177,6 +219,7 @@ class Content {
         for (const entry of slice) {
             if (entry.ref.element === undefined) {
                 entry.ref.element = this.template.content.children[0].cloneNode(true)
+                entry.ref.element.querySelector(".video-entry-content").setAttribute("trigger", `click: #footer.load(#_${entry.ref.id})`)
             }
             entry.ref.element.querySelector(".video-tags").innerHTML = ""
             init.push(entry.ref)

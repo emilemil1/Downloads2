@@ -74,12 +74,43 @@
 
         #footer {
             position: fixed;
-            bottom: 0;
+            top: calc(100vh - var(--footer-height));
+            width: 100%;
+            height: 100vh;
+            transform: translateY(0);
+            display: flex;
+            flex-direction: column;
+            will-change: transform;
+        }
+
+        #footer[display] {
+            transform: translateY(calc(-100vh + var(--footer-height)));
+        }
+
+        #footer[transition] {
+            transition: transform 350ms ease-in;
+        }
+
+        #footer-bar {
             background-color: var(--panel);
             height: var(--footer-height);
-            width: 100%;
             color: var(--text-subtle);
             display: flex;
+        }
+
+        #footer-content {
+            flex-grow: 1;
+            background-color: var(--backdrop);
+        }
+
+        .hidewrapper {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hidewrapper[display] {
+            display: inherit;
         }
 
         #content {
@@ -311,19 +342,26 @@
     </div>
     <div id="content">
     </div>
-    <div id="footer">
-        <div id="credits">
-            <div id="credits-title">emilemil1 | 2020</div>
-            <div id="credits-github">
-                <a id="credits-github-icon" href="https://github.com/emilemil1/Downloads"><img src="icons/GitHub-Mark-Light-32px.png"></a>
-                <span id="credits-github-text">View Source Code</span>
+    <div id="footer" trigger="click: this.load()">
+        <div id="footer-bar">
+            <div id="credits">
+                <div id="credits-title">emilemil1 | 2020</div>
+                <div id="credits-github">
+                    <a id="credits-github-icon" href="https://github.com/emilemil1/Downloads"><img src="icons/GitHub-Mark-Light-32px.png"></a>
+                    <span id="credits-github-text">View Source Code</span>
+                </div>
+            </div>
+        </div>
+        <div id="footer-content">
+            <div class="hidewrapper">
+                <iframe id="footer-video" width="560" height="315" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
     
     <template id="video-entry-template">
         <video-entry>
-            <div class="video-entry-content" trigger="click: #footer.load(this)">
+            <div class="video-entry-content">
                 <img class="video-image-preview" width="320" height="180" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
                 <div class="video-text-preview">
                     <div class="video-text-preview-title"></div>

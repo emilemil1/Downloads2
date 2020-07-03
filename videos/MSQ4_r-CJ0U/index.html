@@ -4,7 +4,8 @@
         <script>
             const url = window.location.href
             const id = url.substring(url.indexOf("/videos/") + 8, url.length-1)
-            window.location.assign(window.location.origin + "/video?=" + id)
+            const host = url.substring(0, url.indexOf("/videos/"))
+            //window.location.assign(host + "/video?=" + id)
         </script>
         <meta http-equiv="cache-control" content="public">
         <meta charset="UTF-8">

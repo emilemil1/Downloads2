@@ -11,7 +11,7 @@ class VideoEntryElement extends HTMLElement {
     setInfo(info, delayImages) {
         if (!this.infoLoaded) {
             this.info = info
-            this.id = info.id
+            this.id = "_"+info.id
             this.infoLoaded = true
         }
         if (!this.titleLoaded) {
