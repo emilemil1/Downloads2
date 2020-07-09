@@ -479,3 +479,5 @@ window.global.searchIndex
     .then(index => new IndexManager(index))
 
 window.addEventListener("resize", () => document.documentElement.style.setProperty("--vh", window.innerHeight + "px"))
+window.addEventListener("scroll", () => document.documentElement.style.setProperty("--vh", window.innerHeight + "px"))
+window.addEventListener("scroll", () => document.querySelector("#_k8pso4p0OO4").querySelector(".video-text-preview-title").textContent = document.documentElement.style.getPropertyValue("--vh"))
