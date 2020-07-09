@@ -3,8 +3,9 @@
 class Trigger {
     constructor(element) {
         element.isTrigger = true
-
-        element.getAttribute("trigger").split("|").forEach(s => {
+        const trigger = element.getAttribute("trigger")
+        if (trigger === null) return
+        trigger.split("|").forEach(s => {
             this.createTrigger(element, s.trim())
         })
     }
@@ -137,11 +138,28 @@ class Trigger {
     }
 }
 
+class Player {
+    constructor(element) {
+        this.title = element.querySelector("#footer-player-title")
+        this.current = element.querySelector("#footer-player-current")
+    }
+
+    setTitle(title) {
+        this.title.innerText = title
+    }
+
+    setCurrent(current) {
+        this.current.innerText = " • " + current
+    }
+}
+
 class Footer {
     constructor(element) {
         this.footer = element
         this.content = element.querySelector("#footer-content")
         this.video = element.querySelector("#footer-video")
+        this.player = new Player(element.querySelector("#footer-player"))
+        this.bar = element.querySelector("#footer-bar")
         this.footer.load = videoEntry => this.load(videoEntry)
         this.load.listener = e => e.preventDefault()
     }
@@ -155,6 +173,7 @@ class Footer {
         }, {
             once: true
         })
+        document.documentElement.style.setProperty("--vh", window.innerHeight + "px")
         this.footer.toggleAttribute("transition")
         this.footer.toggleAttribute("display")
         if (this.footer.hasAttribute("display")) {
@@ -169,14 +188,20 @@ class Footer {
     }
 
     loadCheapContent(videoEntry) {
-
+        this.player.setTitle(videoEntry.info.title)
+        this.bar.toggleAttribute("active", true)
+        const src = "https://www.youtube-nocookie.com/embed/" + videoEntry.id.substring(1)
+        if (this.loaded !== videoEntry.id) this.video.contentWindow.location.replace("about:blank")
     }
 
     loadExpensiveContent(videoEntry) {
         this.content.firstElementChild.toggleAttribute("display", true)
         if (videoEntry !== undefined) {
-            const src = "https://www.youtube-nocookie.com/embed/" + videoEntry.id.substring(1)
-            if (this.video.src !== src) this.video.src = src
+            const src = "https://www.youtube-nocookie.com/embed/" + videoEntry.id.substring(1) + "?VQ=HD720"
+            if (this.loaded !== videoEntry.id) {
+                this.video.contentWindow.location.replace(src)
+                this.loaded = videoEntry.id
+            }
         }
     }
 
@@ -452,3 +477,5 @@ window.global.sync.loaded.then(init)
 
 window.global.searchIndex
     .then(index => new IndexManager(index))
+
+window.addEventListener("resize", () => document.documentElement.style.setProperty("--vh", window.innerHeight + "px"))

@@ -24,7 +24,7 @@ class VideoEntryElement extends HTMLElement {
         }
         if (!this.imageLoaded) {
             const setImg = () => {
-                this.querySelector(".video-image-preview").src = `https://i.ytimg.com/vi/${this.info.id}/mqdefault.jpg`
+                this.querySelector(".video-image-preview").src = `https://i.ytimg.com/vi/${this.info.id}/hqdefault.jpg`
                 this.imageLoaded = true
             }
             if (delayImages) {
@@ -52,6 +52,7 @@ function loadFirstPage(firstPage) {
         const entry = firstPage[i]
         entry.element = content.children[i]
         entry.element.setInfo(entry)
+        entry.element.querySelector(".video-entry-content").setAttribute("trigger", `click: #footer.load(#_${entry.id})`)
     }
 }
 
